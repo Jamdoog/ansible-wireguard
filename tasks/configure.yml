@@ -56,5 +56,5 @@
     regexp: "^#ListenAddress 0.0.0.0$/"
     path: /etc/ssh/sshd_config
     line: "ListenAddress {{ WIREGUARD_ADDRESS }}"
-  when: SSH_LISTEN is defined
+  when: SSH_LISTEN is true
   notify: ssh_restart
