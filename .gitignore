@@ -1,2 +1,4 @@
 tests/
 .travis.yml
+ansible.cfg
+hosts
