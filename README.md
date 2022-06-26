@@ -1,4 +1,4 @@
-Role Name
+Ansible Role: Wireguard
 =========
 
 A role to install and configre Wireguard on Debian/Ubuntu, RHEL/CentOS & OpenSUSE Systems. 
