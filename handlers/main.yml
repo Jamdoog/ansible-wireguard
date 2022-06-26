@@ -1,0 +1,20 @@
+- name: wireguard_down
+  shell: wg-quick down {{ WIREGUARD_NUMBER }}
+
+- name: wireguard_up
+  shell: wg-quick up {{ WIREGUARD_NUMBER }}
+
+- name: wireguard_downup
+  tags: wireguard,downup
+  shell: wg-quick down {{ WIREGUARD_NUMBER}}; wg-quick up {{ WIREGUARD_NUMBER }}
+
+- name: wireguard_service_create
+  service:
+    name: wg-quick@{{ WIREGUARD_NUMBER }}
+    state: started
+    enabled: yes
+
+- name: ssh_restart
+  service:
+    name: sshd
+    state: restarted

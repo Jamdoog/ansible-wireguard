@@ -1,0 +1,60 @@
+---
+- name: Check if Wireguard Files Are Present
+  stat:
+    path: "/etc/wireguard/{{ WIREGUARD_NUMBER }}.conf"
+  register: wireguard_exists
+
+- name: Create Wireguard Directory
+  file:
+    path: /etc/wireguard/
+    state: directory
+    mode: '0700'
+
+- name: Generate Wireguard Private Key
+  shell: 'wg genkey'
+  register: WIREGUARD_PRIVATE_KEY
+  when: not wireguard_exists.stat.exists
+
+- name: Write Wireguard Private Key
+  shell: 'echo "{{ WIREGUARD_PRIVATE_KEY.stdout }}" > /etc/wireguard/privatekey'
+  when: not wireguard_exists.stat.exists  
+
+- name: Get Wireguard Public Key
+  shell: 'wg pubkey < /etc/wireguard/privatekey'
+  register: WIREGUARD_PUBLIC_KEY
+  when: not wireguard_exists.stat.exists
+
+- name: Deploy Wireguard Template
+  template:
+    src: "{{ WIREGUARD_TEMPLATE }}"
+    dest: /etc/wireguard/{{WIREGUARD_NUMBER}}.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: wireguard_service_create
+  when: not wireguard_exists.stat.exists
+
+- name: Deploy To Jump Server
+  blockinfile:
+    path: /etc/wireguard/wg0.conf
+    marker: "# ANSIBLE BLOCK {{ inventory_hostname }}\n"
+    block: "[Peer]\n
+    PublicKey = {{ WIREGUARD_PUBLIC_KEY.stdout }}\n
+    AllowedIPs = {{ WIREGUARD_ADDRESS }}\n
+    {{ WIREGUARD_EXTRA_CONFIG }}\n"
+  delegate_to: Jump
+  when: not wireguard_exists.stat.exists
+
+- name: Update Wireguard Conf
+  shell: "wg-quick down {{ WIREGUARD_NUMBER }}; wg-quick up {{ WIREGUARD_NUMBER }}"
+  delegate_to: Jump
+  when: not wireguard_exists.stat.exists
+  run_once: true
+
+- name: Listen On Wireguard IP SSH
+  lineinfile:
+    regexp: "^#ListenAddress 0.0.0.0$/"
+    path: /etc/ssh/sshd_config
+    line: "ListenAddress {{ WIREGUARD_ADDRESS }}"
+  when: SSH_LISTEN is defined
+  notify: ssh_restart

@@ -1,0 +1,7 @@
+all:
+  hosts:
+  children:
+    firewall:
+      hosts:
+        AT[1:3]
+
