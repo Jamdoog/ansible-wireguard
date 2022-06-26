@@ -93,7 +93,7 @@ These variables should be configured individually for each host
 Dependencies
 ------------
 
-This relies on the ansible.posix module. This should be installed by default. 
+There are no dependencies for this role.
 
 Example Playbook
 ----------------
