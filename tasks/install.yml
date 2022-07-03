@@ -1,17 +1,20 @@
 ---
 - name: Set Wireguard Package Name (APT)
+  tags: install
   set_fact:
     WIREGUARD_PACKAGE: 
       - "wireguard"
   when: ansible_os_family in ["Debian"]
 
 - name: Change Wireguard Package Name (Zypper)
+  tags: install
   set_fact: 
     WIREGUARD_PACKAGE:
       - "wireguard-tools"
   when: ansible_os_family in ["Suse"]
 
 - name: Change Wireguard Package Name (DNF)
+  tags: install
   set_fact: 
     WIREGUARD_PACKAGE:
       - "kmod-wireguard"
@@ -20,6 +23,7 @@
 
 # Debian 10
 - name: Install Buster Backports (Debian 10)
+  tags: install
   apt_repository:
     repo: "{{ DEBIAN_BACKPORTS }}"
     state: present
@@ -32,6 +36,7 @@
 
 
 - name: Install Required Repositories (CentOS)
+  tags: install
   dnf:
     pkg:
       - "{{ item }}"
@@ -45,6 +50,7 @@
 # Install Wireguard 
 
 - name: Install Wireguard Package
+  tags: install
   package:
     name:
       - "{{ item }}"
