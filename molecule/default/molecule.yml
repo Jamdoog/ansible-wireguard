@@ -1,0 +1,171 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+
+platforms:
+  - name: ubuntu2004
+    image: geerlingguy/docker-ubuntu2004-ansible
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+
+  - name: ubuntu1804
+    image: geerlingguy/docker-ubuntu1804-ansible
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    command: "/lib/systemd/systemd"
+
+  - name: ubuntu2204
+    image: geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+
+  - name: debian11
+    image: geerlingguy/docker-debian11-ansible
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+
+  - name: debian10
+    image: geerlingguy/docker-debian10-ansible
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+
+  - name: centos8
+    image: geerlingguy/docker-rockylinux8-ansible
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+
+  - name: centos7
+    image: geerlingguy/docker-centos7-ansible
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+
+  - name: opensuse150
+    image: mesaguy/ansible-molecule-opensuse:opensuse-15.0
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    privileged: true
+    command: "/usr/lib/systemd/systemd"
+
+  - name: opensuse151
+    image: mesaguy/ansible-molecule-opensuse:opensuse-15.1
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    privileged: true
+    command: "/usr/lib/systemd/systemd"
+
+  - name: opensuse152
+    image: mesaguy/ansible-molecule-opensuse:opensuse-15.2
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    privileged: true
+    command: "/usr/lib/systemd/systemd"
+
+  - name: opensuse153
+    image: mesaguy/ansible-molecule-opensuse:opensuse-leap
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    privileged: true
+    command: "/usr/lib/systemd/systemd"
+
+  - name: opensusetumbleweed
+    image: mesaguy/ansible-molecule-opensuse:opensuse-tumbleweed
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    capabilities:
+      - SYS_ADMIN
+    privileged: true
+    command: "/usr/lib/systemd/systemd"
+
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      callback_whitelist: profile_tasks, timer, yaml
+    ssh_connection:
+      pipelining: false
+verifier:
+  name: ansible
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

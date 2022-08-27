@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Include Variables
+      include_vars: "../../defaults/main.yml"
+    - name: Do it
+      include_tasks: ../../tasks/main.yml
+  handlers:
+    - import_tasks: handlers/main.yml

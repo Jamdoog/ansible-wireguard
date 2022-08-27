@@ -1,11 +1,4 @@
 ---
-- name: Set Wireguard Package Name (APT)
-  tags: install
-  set_fact:
-    WIREGUARD_PACKAGE: 
-      - "wireguard"
-  when: ansible_os_family in ["Debian"]
-
 - name: Change Wireguard Package Name (Zypper)
   tags: install
   set_fact: 

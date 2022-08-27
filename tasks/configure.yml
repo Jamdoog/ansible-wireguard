@@ -9,6 +9,7 @@
     path: /etc/wireguard/
     state: directory
     mode: '0700'
+    when: not wireguard_exists.stat.exists
 
 - name: Generate Wireguard Private Key
   shell: 'wg genkey'
@@ -16,11 +17,11 @@
   when: not wireguard_exists.stat.exists
 
 - name: Write Wireguard Private Key
-  shell: 'echo "{{ WIREGUARD_PRIVATE_KEY.stdout }}" > /etc/wireguard/privatekey'
+  shell: 'echo "{{ WIREGUARD_PRIVATE_KEY.stdout }}" > /etc/wireguard/privatekey.{{ WIREGUARD_NUMBER }}'
   when: not wireguard_exists.stat.exists  
 
 - name: Get Wireguard Public Key
-  shell: 'wg pubkey < /etc/wireguard/privatekey'
+  shell: 'wg pubkey < /etc/wireguard/privatekey.{{ WIREGUARD_NUMBER }}'
   register: WIREGUARD_PUBLIC_KEY
   when: not wireguard_exists.stat.exists
 
@@ -30,11 +31,11 @@
     dest: /etc/wireguard/{{WIREGUARD_NUMBER}}.conf
     owner: root
     group: root
-    mode: '0644'
+    mode: '0640'
   notify: wireguard_service_create
   when: not wireguard_exists.stat.exists
 
-- name: Deploy To Jump Server
+- name: Deploy To Central Server
   blockinfile:
     path: /etc/wireguard/wg0.conf
     marker: "# ANSIBLE BLOCK {{ inventory_hostname }}\n"
@@ -42,12 +43,12 @@
     PublicKey = {{ WIREGUARD_PUBLIC_KEY.stdout }}\n
     AllowedIPs = {{ WIREGUARD_ADDRESS }}\n
     {{ WIREGUARD_EXTRA_CONFIG }}\n"
-  delegate_to: Jump
+  delegate_to: "{{ HOST_SERVER }}"
   when: not wireguard_exists.stat.exists
 
 - name: Update Wireguard Conf
   shell: "wg-quick down {{ WIREGUARD_NUMBER }}; wg-quick up {{ WIREGUARD_NUMBER }}"
-  delegate_to: Jump
+  delegate_to: "{{ HOST_SERVER }}"
   when: not wireguard_exists.stat.exists
   run_once: true
 
