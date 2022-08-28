@@ -9,7 +9,7 @@
     path: /etc/wireguard/
     state: directory
     mode: '0700'
-    when: not wireguard_exists.stat.exists
+  when: not wireguard_exists.stat.exists
 
 - name: Generate Wireguard Private Key
   shell: 'wg genkey'
