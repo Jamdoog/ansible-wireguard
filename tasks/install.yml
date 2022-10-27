@@ -12,7 +12,7 @@
     WIREGUARD_PACKAGE:
       - "kmod-wireguard"
       - "wireguard-tools"
-  when: ansible_os_family in ["RedHat"]
+  when: ansible_os_family == "RedHat"
 
 # Debian 10
 - name: Install Buster Backports (Debian 10)
@@ -34,7 +34,7 @@
     pkg:
       - "{{ item }}"
   when:
-    - ansible_distribution in ["CentOS"]
+    - ansible_os_family == "RedHat"
     - ansible_distribution_major_version == "8"
   loop: "{{ CENTOS_REPO_INSTALL }}"
 
