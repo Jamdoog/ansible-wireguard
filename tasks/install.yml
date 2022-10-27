@@ -12,7 +12,7 @@
     WIREGUARD_PACKAGE:
       - "kmod-wireguard"
       - "wireguard-tools"
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family in ["RedHat"]
 
 # Debian 10
 - name: Install Buster Backports (Debian 10)
@@ -24,8 +24,16 @@
     - ansible_distribution == "Debian"
     - ansible_distribution_major_version == "10"
 
+# RHEL 8
+- name: Install elrepo and epel (RHEL 8)
+  tags: install
+  dnf:
+    pkg: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm"
+  when:
+    - ansible_distribution in ["RedHat"]
+    - ansible_distribution_major_version == "8"
 
-# RHEL/CentOS 8
+# CentOS 8
 
 
 - name: Install Required Repositories (CentOS)
@@ -34,7 +42,7 @@
     pkg:
       - "{{ item }}"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_distribution in ["CentOS"]
     - ansible_distribution_major_version == "8"
   loop: "{{ CENTOS_REPO_INSTALL }}"
 
