@@ -37,7 +37,7 @@
 
 - name: Deploy To Central Server
   blockinfile:
-    path: /etc/wireguard/wg0.conf
+    path: /etc/wireguard/{{WIREGUARD_NUMBER}}.conf
     marker: "# ANSIBLE BLOCK {{ inventory_hostname }}\n"
     block: "[Peer]\n
     PublicKey = {{ WIREGUARD_PUBLIC_KEY.stdout }}\n
