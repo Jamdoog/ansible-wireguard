@@ -45,7 +45,7 @@
     pkg:
       - "{{ item }}"
   when:
-    - ansible_distribution in ["CentOS"]
+    - ansible_distribution in ["CentOS", "AlmaLinux"]
     - ansible_distribution_major_version == "8"
   loop: "{{ CENTOS_REPO_INSTALL }}"
 
